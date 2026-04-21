@@ -1,0 +1,60 @@
+<script>
+function swapRoute(){
+    var o=document.getElementById("origin");
+    var d=document.getElementById("destination");
+    var temp=o.value;
+    o.value=d.value;
+    d.value=temp;
+}
+
+function getNumber(id){
+    var val=document.getElementById(id).value;
+    if(val==="" || isNaN(val)) return 0;
+    return parseFloat(val);
+}
+
+function calculate(){
+
+var weight=getNumber("weight");
+var volume=getNumber("volume");
+var mode=document.getElementById("mode").value;
+var time=getNumber("time");
+
+var baseRate = (mode==="Air") ? 5 : 2;
+var price = (weight * baseRate) + (volume * 50);
+
+if(time < 5) price = price * 1.2;
+if(weight > 200) price = price * 0.9;
+
+var carriers=[
+{name:"DHL Express",price:price},
+{name:"Emirates SkyCargo",price:price*0.95},
+{name:"Qatar Cargo",price:price*1.05}
+];
+
+carriers.sort(function(a,b){ return a.price - b.price; });
+
+var recommendation = (mode==="Air") 
+? "Recommended due to faster delivery."
+: "Sea is cost-efficient.";
+
+var confidence = (weight<200 && time>=5) ? "High" : "Medium";
+
+var html="<div class='ai-box'>🤖 AI Insight:<br>"
++ recommendation + "<br>Confidence: <b>" + confidence + "</b></div>";
+
+for(var i=0;i<carriers.length;i++){
+    html += "<div class='result-card "+(i===0?"best":"")+"'>"
+    + "<b>"+carriers[i].name+"</b><br>"
+    + "$"+carriers[i].price.toFixed(2);
+
+    if(i===0){
+        html += "<br><span style='color:green'>Best Option</span>";
+    }
+
+    html += "</div>";
+}
+
+document.getElementById("result").innerHTML=html;
+}
+</script>
