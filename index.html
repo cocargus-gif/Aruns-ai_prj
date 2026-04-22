@@ -1,119 +1,146 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Pricing Clean</title>
+<title>AI Pricing Premium Layout</title>
 
 <style>
 *{box-sizing:border-box;}
-
 body{
 margin:0;
 font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
-background:#f4f6fb;
+background: radial-gradient(circle at top, #1a1a1a, #000);
+color:white;
 }
 
 .container{
 max-width:420px;
 margin:auto;
-padding:16px;
+padding:20px;
 }
 
 .card{
-background:#fff;
-border-radius:20px;
-padding:18px;
-box-shadow:0 10px 25px rgba(0,0,0,0.06);
+position:relative;
+background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+border-radius:25px;
+padding:20px;
+box-shadow:0 0 25px rgba(255,120,0,0.1),0 15px 50px rgba(0,0,0,0.7);
 overflow:hidden;
 }
 
-h2{margin:0;font-size:20px;}
-.sub{font-size:12px;color:#777;margin-bottom:10px;}
-
-label{
-font-size:12px;
-font-weight:600;
-margin-top:10px;
-display:block;
+.glow{
+position:absolute;
+width:220px;
+height:220px;
+background: radial-gradient(circle, rgba(255,120,0,0.4), transparent);
+filter: blur(70px);
+top:-60px;
+right:-60px;
 }
+
+h2{margin:0 0 10px;font-size:22px;}
+
+label{font-size:13px;color:#ccc;margin-top:12px;display:block;}
 
 input,select{
-width:100%;
-padding:12px;
-border-radius:12px;
-border:1px solid #e5e7eb;
-margin-top:5px;
-background:#fafafa;
-font-size:14px;
-outline:none;
-}
-
-input:focus,select:focus{
-border-color:#111;
-background:#fff;
-}
-
-.row{
-display:flex;
-gap:10px;
-}
-
-button{
 width:100%;
 padding:14px;
 border-radius:14px;
 border:none;
-margin-top:14px;
-font-weight:600;
-font-size:14px;
-cursor:pointer;
-}
-
-.primary{
+margin-top:6px;
 background:#111;
-color:#fff;
+color:white;
+font-size:15px;
 }
 
-.result{margin-top:15px;}
+.row{display:flex;gap:10px;}
 
-.box{
-background:#f9fafb;
-padding:12px;
-border-radius:12px;
+button{
+margin-top:18px;
+padding:16px;
+border-radius:20px;
+border:none;
+background:linear-gradient(135deg,#ff7a00,#ff3d00);
+color:white;
+font-weight:bold;
+width:100%;
+font-size:16px;
+}
+
+/* AI BOX */
+.ai-box{
+margin-top:15px;
+padding:16px;
+border-radius:18px;
+background: linear-gradient(135deg, rgba(255,120,0,0.15), rgba(255,60,0,0.08));
+border:1px solid rgba(255,120,0,0.3);
+}
+
+.ai-title{
+font-weight:bold;
+color:#ff7a00;
+margin-bottom:8px;
+font-size:14px;
+}
+
+.ai-title::before{
+content:"";
+display:inline-block;
+width:8px;
+height:8px;
+background:#ff7a00;
+border-radius:50%;
+margin-right:6px;
+}
+
+.ai-text{font-size:15px;color:#eee;margin-bottom:8px;}
+.ai-confidence{font-size:12px;color:#aaa;}
+
+/* RESULT CARD */
+.result-card{
+margin-top:15px;
+padding:16px;
+border-radius:18px;
+background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+border:1px solid rgba(255,120,0,0.2);
+}
+
+.result-title{
+color:#ff7a00;
+font-weight:bold;
+margin-bottom:10px;
+font-size:14px;
+}
+
+.result-item{
+background:#111;
+padding:14px;
+border-radius:14px;
 margin-top:10px;
+font-size:16px;
 }
 
 .best{
-border:2px solid #111;
-background:#fff;
+border:1px solid #ff7a00;
 }
-
-.small{font-size:12px;color:#666;}
-.price{font-size:18px;font-weight:bold;}
 
 .footer{
 text-align:center;
 font-size:11px;
-color:#888;
+color:#777;
 margin-top:12px;
 }
 </style>
-
 </head>
+
 <body>
 
 <div class="container">
 <div class="card">
+<div class="glow"></div>
 
 <h2>AI Pricing</h2>
-<div class="sub">Clean & structured calculation</div>
-
-<label>Route</label>
-<div class="row">
-<input id="origin" value="DXB">
-<input id="destination" value="SIN">
-</div>
 
 <label>Mode</label>
 <select id="mode">
@@ -123,96 +150,16 @@ margin-top:12px;
 
 <div class="row">
 <div style="flex:1;">
-<label>Weight (kg)</label>
-<input id="weight" type="number" value="150">
+<label>Weight</label>
+<input id="weight" value="150">
 </div>
-
 <div style="flex:1;">
-<label>Volume (CBM)</label>
-<input id="volume" type="number" value="2.5">
+<label>Volume</label>
+<input id="volume" value="2.5">
 </div>
 </div>
 
 <label>Lead Time</label>
-<input id="time" type="number" value="6">
+<input id="time" value="6">
 
-<button id="calcBtn" class="primary">Calculate</button>
-
-<div id="result" class="result"></div>
-
-<div class="footer">Created by Arun</div>
-
-</div>
-</div>
-
-<script>
-function num(id){
-var v=document.getElementById(id).value;
-if(v===""||isNaN(v)) return 0;
-return parseFloat(v);
-}
-
-document.getElementById("calcBtn").addEventListener("click", function(){
-
-var w=num("weight");
-var v=num("volume");
-var t=num("time");
-var m=document.getElementById("mode").value;
-
-// Chargeable weight
-var volumetric = v * 167;
-var chargeable = Math.max(w, volumetric);
-
-// Rates
-var rate = (m==="Air") ? 4.5 : 1.8;
-var freight = chargeable * rate;
-
-// Surcharges
-var fuel = freight * 0.12;
-var handling = 50;
-var urgency = (t < 5) ? freight * 0.15 : 0;
-
-// Total
-var total = freight + fuel + handling + urgency;
-
-// Carriers
-var carriers=[
-{name:"DHL",total:total},
-{name:"Emirates",total:total*0.95},
-{name:"Qatar",total:total*1.05}
-];
-
-carriers.sort(function(a,b){return a.total-b.total;});
-
-// UI Output
-var html="";
-
-html+="<div class='box'>";
-html+="<div class='small'>Chargeable Weight</div>";
-html+="<div class='price'>"+chargeable.toFixed(1)+" kg</div>";
-html+="</div>";
-
-html+="<div class='box'>";
-html+="Freight: $"+freight.toFixed(2)+"<br>";
-html+="Fuel: $"+fuel.toFixed(2)+"<br>";
-html+="Handling: $"+handling+"<br>";
-html+="Urgency: $"+urgency.toFixed(2);
-html+="</div>";
-
-for(var i=0;i<carriers.length;i++){
-html+="<div class='box "+(i===0?"best":"")+"'>";
-html+="<b>"+carriers[i].name+"</b><br>";
-html+="<div class='price'>$"+carriers[i].total.toFixed(2)+"</div>";
-if(i===0){
-html+="<div class='small' style='color:green;'>Best Option</div>";
-}
-html+="</div>";
-}
-
-document.getElementById("result").innerHTML=html;
-
-});
-</script>
-
-</body>
-</html>
+<button
