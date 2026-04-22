@@ -3,144 +3,140 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>AI Logistics Pricing</title>
+<title>AI Pricing Clean</title>
 
 <style>
-body {
-    margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg,#eef2ff,#f8fafc);
+*{box-sizing:border-box;}
+
+body{
+margin:0;
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto;
+background:#f4f6fb;
 }
 
-.container {
-    max-width:420px;
-    margin:auto;
-    padding:20px;
+.container{
+max-width:420px;
+margin:auto;
+padding:16px;
 }
 
-.card {
-    background:white;
-    border-radius:18px;
-    padding:20px;
-    box-shadow:0 15px 30px rgba(0,0,0,0.08);
+.card{
+background:#fff;
+border-radius:20px;
+padding:18px;
+box-shadow:0 10px 25px rgba(0,0,0,0.06);
+overflow:hidden;
 }
 
-.header {
-    text-align:center;
-    margin-bottom:15px;
+h2{margin:0;font-size:20px;}
+.sub{font-size:12px;color:#777;margin-bottom:10px;}
+
+label{
+font-size:12px;
+font-weight:600;
+margin-top:10px;
+display:block;
 }
 
-.header h2 {
-    margin:0;
+input,select{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #e5e7eb;
+margin-top:5px;
+background:#fafafa;
+font-size:14px;
+outline:none;
 }
 
-.header span {
-    font-size:13px;
-    color:#666;
+input:focus,select:focus{
+border-color:#111;
+background:#fff;
 }
 
-label {
-    font-size:13px;
-    font-weight:600;
-    margin-top:10px;
-    display:block;
+.row{
+display:flex;
+gap:10px;
 }
 
-input, select {
-    width:100%;
-    padding:12px;
-    border-radius:10px;
-    border:1px solid #ddd;
-    margin-top:5px;
+button{
+width:100%;
+padding:14px;
+border-radius:14px;
+border:none;
+margin-top:14px;
+font-weight:600;
+font-size:14px;
+cursor:pointer;
 }
 
-button {
-    margin-top:15px;
-    padding:14px;
-    width:100%;
-    border:none;
-    border-radius:12px;
-    font-weight:bold;
-    cursor:pointer;
+.primary{
+background:#111;
+color:#fff;
 }
 
-.primary {
-    background:linear-gradient(135deg,#6366f1,#4f46e5);
-    color:white;
+.result{margin-top:15px;}
+
+.box{
+background:#f9fafb;
+padding:12px;
+border-radius:12px;
+margin-top:10px;
 }
 
-.swap {
-    background:#f1f5f9;
+.best{
+border:2px solid #111;
+background:#fff;
 }
 
-.result {
-    margin-top:20px;
-}
+.small{font-size:12px;color:#666;}
+.price{font-size:18px;font-weight:bold;}
 
-.result-card {
-    background:#f9fafb;
-    padding:15px;
-    border-radius:14px;
-    margin-top:10px;
-}
-
-.best {
-    border:2px solid #6366f1;
-}
-
-.ai-box {
-    background:#eef2ff;
-    padding:12px;
-    border-radius:12px;
-    margin-top:15px;
-    font-size:13px;
-}
-
-.footer {
-    text-align:center;
-    font-size:12px;
-    margin-top:15px;
-    color:#777;
+.footer{
+text-align:center;
+font-size:11px;
+color:#888;
+margin-top:12px;
 }
 </style>
-</head>
 
+</head>
 <body>
 
 <div class="container">
-
 <div class="card">
 
-<div class="header">
-    <h2>🚀 AI Pricing Tool</h2>
-    <span>Smart logistics rate recommendation</span>
-</div>
+<h2>AI Pricing</h2>
+<div class="sub">Clean & structured calculation</div>
 
-<label>Origin</label>
+<label>Route</label>
+<div class="row">
 <input id="origin" value="DXB">
-
-<label>Destination</label>
 <input id="destination" value="SIN">
-
-<button class="swap" onclick="swapRoute()">🔁 Swap Route</button>
+</div>
 
 <label>Mode</label>
 <select id="mode">
-    <option>Air</option>
-    <option>Sea</option>
+<option>Air</option>
+<option>Sea</option>
 </select>
 
+<div class="row">
+<div style="flex:1;">
 <label>Weight (kg)</label>
 <input id="weight" type="number" value="150">
+</div>
 
+<div style="flex:1;">
 <label>Volume (CBM)</label>
 <input id="volume" type="number" value="2.5">
+</div>
+</div>
 
 <label>Lead Time</label>
 <input id="time" type="number" value="6">
 
-<button class="primary" onclick="calculate()">Generate AI Recommendation</button>
+<button id="calcBtn" class="primary">Calculate</button>
 
 <div id="result" class="result"></div>
 
@@ -150,62 +146,72 @@ button {
 </div>
 
 <script>
-function swapRoute(){
-    let o=document.getElementById("origin");
-    let d=document.getElementById("destination");
-    [o.value,d.value]=[d.value,o.value];
+function num(id){
+var v=document.getElementById(id).value;
+if(v===""||isNaN(v)) return 0;
+return parseFloat(v);
 }
 
-function calculate(){
+document.getElementById("calcBtn").addEventListener("click", function(){
 
-let weight=parseFloat(document.getElementById("weight").value);
-let volume=parseFloat(document.getElementById("volume").value);
-let mode=document.getElementById("mode").value;
-let time=parseInt(document.getElementById("time").value);
+var w=num("weight");
+var v=num("volume");
+var t=num("time");
+var m=document.getElementById("mode").value;
 
-// base logic
-let baseRate= mode==="Air"?5:2;
-let price=(weight*baseRate)+(volume*50);
+// Chargeable weight
+var volumetric = v * 167;
+var chargeable = Math.max(w, volumetric);
 
-// adjustments
-if(time<5) price*=1.2;
-if(weight>200) price*=0.9;
+// Rates
+var rate = (m==="Air") ? 4.5 : 1.8;
+var freight = chargeable * rate;
 
-// carriers
-let carriers=[
-{name:"DHL Express",price:price},
-{name:"Emirates SkyCargo",price:price*0.95},
-{name:"Qatar Cargo",price:price*1.05}
+// Surcharges
+var fuel = freight * 0.12;
+var handling = 50;
+var urgency = (t < 5) ? freight * 0.15 : 0;
+
+// Total
+var total = freight + fuel + handling + urgency;
+
+// Carriers
+var carriers=[
+{name:"DHL",total:total},
+{name:"Emirates",total:total*0.95},
+{name:"Qatar",total:total*1.05}
 ];
 
-// sort best
-carriers.sort((a,b)=>a.price-b.price);
+carriers.sort(function(a,b){return a.total-b.total;});
 
-// AI reasoning
-let recommendation = mode==="Air" 
-? "Recommended due to faster delivery and moderate weight."
-: "Sea is cost-efficient for this shipment profile.";
+// UI Output
+var html="";
 
-let confidence = weight<200 && time>=5 ? "High" : "Medium";
+html+="<div class='box'>";
+html+="<div class='small'>Chargeable Weight</div>";
+html+="<div class='price'>"+chargeable.toFixed(1)+" kg</div>";
+html+="</div>";
 
-// UI render
-let html=`<div class="ai-box">
-🤖 AI Insight:<br>
-${recommendation}<br>
-Confidence: <b>${confidence}</b>
-</div>`;
+html+="<div class='box'>";
+html+="Freight: $"+freight.toFixed(2)+"<br>";
+html+="Fuel: $"+fuel.toFixed(2)+"<br>";
+html+="Handling: $"+handling+"<br>";
+html+="Urgency: $"+urgency.toFixed(2);
+html+="</div>";
 
-carriers.forEach((c,i)=>{
-html+=`
-<div class="result-card ${i===0?'best':''}">
-<b>${c.name}</b><br>
-$${c.price.toFixed(2)}
-${i===0?"<br><span style='color:green'>Best Option</span>":""}
-</div>`;
-});
+for(var i=0;i<carriers.length;i++){
+html+="<div class='box "+(i===0?"best":"")+"'>";
+html+="<b>"+carriers[i].name+"</b><br>";
+html+="<div class='price'>$"+carriers[i].total.toFixed(2)+"</div>";
+if(i===0){
+html+="<div class='small' style='color:green;'>Best Option</div>";
+}
+html+="</div>";
+}
 
 document.getElementById("result").innerHTML=html;
-}
+
+});
 </script>
 
 </body>
